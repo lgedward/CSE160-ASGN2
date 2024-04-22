@@ -24,8 +24,6 @@ function main() {
 	scene.background = new THREE.Color( 'black' );
 
 	
-
-	
 	const boxWidth = 100;
     const boxHeight = 100;
     const boxDepth = 100;
@@ -35,20 +33,31 @@ function main() {
     cube.position.x = 1000;
 	cube.position.y = 500;
     scene.add(cube);
-	
-	const geometry2 = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
 
+
+	const sphereRadius = 50;  // Set the radius to 50 for visibility
+    const sphereWidthDivisions = 32;
+    const sphereHeightDivisions = 32;
+    const sphereGeometry = new THREE.SphereGeometry(sphereRadius, sphereWidthDivisions, sphereHeightDivisions);
+    const sphereMaterial = new THREE.MeshPhongMaterial({ color: 0x44aa88 });
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphere.position.x = 500;
+    sphere.position.y = 500;
+    scene.add(sphere);
+
+	const geometry3 = new THREE.BoxGeometry( boxWidth, boxHeight, boxDepth );
 	const loader = new THREE.TextureLoader();
-
 	const texture = loader.load( './images/wall.jpg' );
 	texture.colorSpace = THREE.SRGBColorSpace;
 	const material2 = new THREE.MeshBasicMaterial( {
 		map: texture,
 	} );
-	const cube2 = new THREE.Mesh( geometry2, material2 );
-	cube2.position.x = -1000;
-	cube2.position.y = 500;
-	scene.add( cube2 );
+	const cube3 = new THREE.Mesh( geometry3, material2 );
+	cube3.position.x = -1000;
+	cube3.position.y = 500;
+	scene.add( cube3 );
+
+	const shapes = [cube, sphere];
 
 
 	{
@@ -173,7 +182,7 @@ function main() {
 
 	}
 
-	function render() {
+	function render(time) {
 
 		if ( resizeRendererToDisplaySize( renderer ) ) {
 
@@ -182,6 +191,16 @@ function main() {
 			camera.updateProjectionMatrix();
 
 		}
+		
+
+		shapes.forEach( ( cube, ndx ) => {
+
+			const speed = 1 + ndx * .1;
+			const rot = time * speed;
+			cube.rotation.x = rot;
+			cube.rotation.y = rot;
+
+		} );
 
 		renderer.render( scene, camera );
 
